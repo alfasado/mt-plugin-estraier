@@ -1,0 +1,11 @@
+name: Estraier
+id:   Estraier
+version: 0.1
+author_link: http://alfasado.net/
+author_name: Alfasado Inc.
+description: Search Estraier for Dynamic Publishing.
+tags:
+    block:
+        EstraierSearch: sub{}
+    function:
+        EstraierCount: sub{}
