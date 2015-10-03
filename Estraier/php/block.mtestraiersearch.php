@@ -139,6 +139,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $hit = $hit->attributes()->number;
         if ( $need_count ) {
             $repeat = FALSE;
+            $ctx->restore( $localvars );
             return $hit;
         }
         $time = $meta->time;
