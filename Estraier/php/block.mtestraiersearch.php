@@ -27,6 +27,11 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
                 $offset = NULL;
             }
         }
+        if ( isset( $args[ 'count' ] ) ) {
+            if ( $args[ 'count' ] ) {
+                $need_count = 1;
+            }
+        }
         if ( isset( $args[ 'ad_attr' ] ) ) {
             $ad_attr = $args[ 'ad_attr' ];
         }
@@ -86,6 +91,22 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         }
         $cmd .= " -max ${limit}";
         $cmd .= $condition;
+        if (! $need_count ) {
+            if ( isset( $args[ 'sort_by' ] ) ) {
+                $sort_by = $args[ 'sort_by' ];
+            }
+            if ( isset( $args[ 'sort_order' ] ) ) {
+                $sort_order = $args[ 'sort_order' ];
+            }
+            if ( $sort_by && $sort_order ) {
+                if ( $sort_order == 'ascend' ) {
+                    $sort_order = 'NUMA';
+                } else if ( $sort_order == 'decend' ) {
+                    $sort_order = 'NUMD';
+                }
+                $cmd .= " -ord " . escapeshellarg( "${sort_by} ${sort_order}" );
+            }
+        }
         $cmd .= ' ' . $ctx->mt->config( 'EstcmdIndex' );
         if ( $phrase ) {
             $phrase = escapeshellarg( $phrase );
@@ -116,11 +137,9 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $ctx->stash( '_estraier_search_meta', $meta );
         $hit = $meta->hit;
         $hit = $hit->attributes()->number;
-        if ( isset( $args[ 'count' ] ) ) {
-            if ( $args[ 'count' ] ) {
-                $repeat = FALSE;
-                return $hit;
-            }
+        if ( $need_count ) {
+            $repeat = FALSE;
+            return $hit;
         }
         $time = $meta->time;
         $time = $time->attributes()->time;
