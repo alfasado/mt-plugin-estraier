@@ -116,6 +116,12 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $ctx->stash( '_estraier_search_meta', $meta );
         $hit = $meta->hit;
         $hit = $hit->attributes()->number;
+        if ( isset( $args[ 'count' ] ) ) {
+            if ( $args[ 'count' ] ) {
+                $repeat = FALSE;
+                return $hit;
+            }
+        }
         $time = $meta->time;
         $time = $time->attributes()->time;
         $ctx->stash( '_estraier_search_time', $time );
