@@ -48,17 +48,29 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         }
         if ( $ad_attr ) {
             if (! is_array( $ad_attr ) ) {
-                $ad_attr = str_getcsv( $ad_attr, ':' );
+                if ( strpos( $ad_attr, ':' ) !== FALSE ) {
+                    $ad_attr = str_getcsv( $ad_attr, ':' );
+                } else {
+                    $ad_attr = array( $ad_attr );
+                }
             }
         }
         if ( $add_condition ) {
             if (! is_array( $add_condition ) ) {
-                $add_condition = str_getcsv( $add_condition, ':' );
+                if ( strpos( $add_condition, ':' ) !== FALSE ) {
+                    $add_condition = str_getcsv( $add_condition, ':' );
+                } else {
+                    $add_condition = array( $add_condition );
+                }
             }
         }
         if ( $values ) {
             if (! is_array( $values ) ) {
-                $values = str_getcsv( $values, ':' );
+                if ( strpos( $values, ':' ) !== FALSE ) {
+                    $values = str_getcsv( $values, ':' );
+                } else {
+                    $values = array( $values );
+                }
             }
         }
         $i = 0;
