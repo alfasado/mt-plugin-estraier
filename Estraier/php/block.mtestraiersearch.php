@@ -192,7 +192,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         foreach( $attrs as $attr ) {
             $ctx->__stash[ 'vars' ][ $prefix .
                 $attr->attributes()->name ]
-                = $attr->attributes()->value;
+                = $attr->attributes()->value[ 0 ];
         }
         $ctx->stash( '_estraier_record', $record );
         $ctx->__stash[ 'vars' ][ $prefix . 'uri' ] = $record->attributes()->uri;
