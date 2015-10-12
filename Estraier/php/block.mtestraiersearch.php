@@ -190,13 +190,19 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $record = $records[ $counter ];
         $attrs = $record->attribute;
         foreach( $attrs as $attr ) {
+            $val = $attr->attributes()->value[ 0 ];
+            $val = (string)$val;
             $ctx->__stash[ 'vars' ][ $prefix .
                 $attr->attributes()->name ]
-                = $attr->attributes()->value[ 0 ];
+                = $val;
         }
         $ctx->stash( '_estraier_record', $record );
-        $ctx->__stash[ 'vars' ][ $prefix . 'uri' ] = $record->attributes()->uri;
-        $ctx->__stash[ 'vars' ][ $prefix . 'id' ] = $record->attributes()->id;
+        $_uri = $record->attributes()->uri;
+        $_uri = (string)$_uri; 
+        $_id = $record->attributes()->id;
+        $_id = (string)$_id; 
+        $ctx->__stash[ 'vars' ][ 'estraier_uri' ] = $_uri;
+        $ctx->__stash[ 'vars' ][ 'estraier_id' ] = $_id;
         $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $record->snippet;
         $count = $counter + 1;
         $ctx->stash( '_estraier_counter', $count );
