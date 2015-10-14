@@ -149,6 +149,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $ctx->stash( '_estraier_search_meta', $meta );
         $hit = $meta->hit;
         $hit = $hit->attributes()->number;
+        $hit = (string) $hit;
         if ( $need_count ) {
             $repeat = FALSE;
             $ctx->restore( $localvars );
@@ -156,6 +157,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         }
         $time = $meta->time;
         $time = $time->attributes()->time;
+        $time = (string) $time;
         $ctx->stash( '_estraier_search_time', $time );
         $ctx->__stash[ 'vars' ][ $prefix . 'totaltime' ] = $time;
         $ctx->stash( '_estraier_search_hit', $hit );
@@ -201,9 +203,11 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $_uri = (string)$_uri; 
         $_id = $record->attributes()->id;
         $_id = (string)$_id; 
+        $_snippet = $record->snippet;
+        $_snippet = (string)$_snippet; 
         $ctx->__stash[ 'vars' ][ 'estraier_uri' ] = $_uri;
         $ctx->__stash[ 'vars' ][ 'estraier_id' ] = $_id;
-        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $record->snippet;
+        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $_snippet;
         $count = $counter + 1;
         $ctx->stash( '_estraier_counter', $count );
         $ctx->__stash[ 'vars' ][ '__total__' ] = $hit;
