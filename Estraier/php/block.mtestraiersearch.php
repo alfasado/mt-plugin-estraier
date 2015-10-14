@@ -145,11 +145,10 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $result = new SimpleXMLElement( $xml );
         $records = $result->document;
         $meta = $result->meta;
-        $ctx->stash( '_estraier_search_results', $records );
         $ctx->stash( '_estraier_search_meta', $meta );
         $hit = $meta->hit;
         $hit = $hit->attributes()->number;
-        $hit = (string) $hit;
+        $hit = ( string ) $hit;
         if ( $need_count ) {
             $repeat = FALSE;
             $ctx->restore( $localvars );
@@ -157,7 +156,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         }
         $time = $meta->time;
         $time = $time->attributes()->time;
-        $time = (string) $time;
+        $time = ( string ) $time;
         $ctx->stash( '_estraier_search_time', $time );
         $ctx->__stash[ 'vars' ][ $prefix . 'totaltime' ] = $time;
         $ctx->stash( '_estraier_search_hit', $hit );
@@ -180,6 +179,18 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
                 $ctx->__stash[ 'vars' ][ $prefix . 'prevoffset' ] = $prevoffset;
             }
         }
+        if ( isset( $args[ 'shuffle' ] ) ) {
+            if ( $args[ 'shuffle' ] ) {
+                $_count = count( $records );
+                $_records = array();
+                for ( $i = 0; $i < $_count; $i++ ) {
+                    $_records[] = $records[ $i ];
+                }
+                shuffle( $_records );
+                $records = $_records;
+            }
+        }
+        $ctx->stash( '_estraier_search_results', $records );
     } else {
         $records = $ctx->stash( '_estraier_search_results' );
         $meta = $ctx->stash( '_estraier_search_meta' );
@@ -193,21 +204,19 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $attrs = $record->attribute;
         foreach( $attrs as $attr ) {
             $val = $attr->attributes()->value[ 0 ];
-            $val = (string)$val;
-            $ctx->__stash[ 'vars' ][ $prefix .
-                $attr->attributes()->name ]
-                = $val;
+            $val = ( string ) $val;
+            $name = $attr->attributes()->name;
+            $name = ( string ) $name;
+            $ctx->__stash[ 'vars' ][ $prefix . $name ] = $val;
         }
         $ctx->stash( '_estraier_record', $record );
         $_uri = $record->attributes()->uri;
-        $_uri = (string)$_uri; 
+        $_uri = ( string )$_uri; 
         $_id = $record->attributes()->id;
-        $_id = (string)$_id; 
-        $_snippet = $record->snippet;
-        $_snippet = (string)$_snippet; 
+        $_id = ( string )$_id; 
         $ctx->__stash[ 'vars' ][ 'estraier_uri' ] = $_uri;
         $ctx->__stash[ 'vars' ][ 'estraier_id' ] = $_id;
-        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $_snippet;
+        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $record->snippet;
         $count = $counter + 1;
         $ctx->stash( '_estraier_counter', $count );
         $ctx->__stash[ 'vars' ][ '__total__' ] = $hit;
