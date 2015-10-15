@@ -46,6 +46,20 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         } else if ( isset( $args[ 'query' ] ) ) {
             $phrase = $args[ 'query' ];
         }
+        if ( $phrase ) {
+            if ( strpos( $phrase, ':' ) !== FALSE ) {
+                $phrase = str_getcsv( $phrase, ':' );
+                $_phrase = array();
+                foreach ( $phrase as $q ) {
+                    if ( strpos( $q, 'Array.' ) === 0 ) {
+                        $q = str_replace( 'Array.', '', $q );
+                        $q = $ctx->__stash[ 'vars' ][ $q ];
+                    }
+                    array_push( $_phrase, $q );
+                }
+                $phrase = $_phrase;
+            }
+        }
         if ( $ad_attr ) {
             if (! is_array( $ad_attr ) ) {
                 if ( strpos( $ad_attr, ':' ) !== FALSE ) {
@@ -121,7 +135,15 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         }
         $cmd .= ' ' . $ctx->mt->config( 'EstcmdIndex' );
         if ( $phrase ) {
-            $phrase = escapeshellarg( $phrase );
+            if ( is_array( $phrase ) ) {
+                if ( isset( $args[ 'and_or' ] ) ) $and_or = $args[ 'and_or' ];
+                if (! $and_or ) $and_or = 'OR';
+                $and_or = strtoupper( $and_or );
+                $and_or = " ${and_or} ";
+                $phrase = escapeshellarg( implode( $and_or, $phrase ) );
+            } else {
+                $phrase = escapeshellarg( $phrase );
+            }
             $cmd .= " ${phrase}";
         }
         $hash = md5( $cmd );
