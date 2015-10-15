@@ -236,9 +236,11 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $_uri = ( string )$_uri; 
         $_id = $record->attributes()->id;
         $_id = ( string )$_id; 
+        $_snippet = $record->snippet;
+        $_snippet = ( string )$_snippet; 
         $ctx->__stash[ 'vars' ][ 'estraier_uri' ] = $_uri;
         $ctx->__stash[ 'vars' ][ 'estraier_id' ] = $_id;
-        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $record->snippet;
+        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $_snippet;
         $count = $counter + 1;
         $ctx->stash( '_estraier_counter', $count );
         $ctx->__stash[ 'vars' ][ '__total__' ] = $hit;

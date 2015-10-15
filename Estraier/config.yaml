@@ -1,11 +1,12 @@
 name: Estraier
 id:   Estraier
-version: 0.1
+key:  estraier
+version: 0.2
 author_link: http://alfasado.net/
 author_name: Alfasado Inc.
-description: Search Estraier for Dynamic Publishing.
+description: Dynamic Handler for Search Estraier.
 tags:
     block:
-        EstraierSearch: sub{}
+        EstraierSearch: $estraier::Estraier::Tags::_hdlr_estraier_search
     function:
-        EstraierCount: sub{}
+        EstraierCount: $estraier::Estraier::Tags::_hdlr_estraier_count
