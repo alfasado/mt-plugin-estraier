@@ -34,12 +34,18 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         }
         if ( isset( $args[ 'ad_attr' ] ) ) {
             $ad_attr = $args[ 'ad_attr' ];
+        } else if ( isset( $args[ 'ad_attrs' ] ) ) {
+            $ad_attr = $args[ 'ad_attrs' ];
         }
         if ( isset( $args[ 'add_condition' ] ) ) {
             $add_condition = $args[ 'add_condition' ];
+        } else if ( isset( $args[ 'add_conditions' ] ) ) {
+            $ad_attr = $args[ 'add_conditions' ];
         }
         if ( isset( $args[ 'values' ] ) ) {
             $values = $args[ 'values' ];
+        } else if ( isset( $args[ 'value' ] ) ) {
+            $ad_attr = $args[ 'value' ];
         }
         if ( isset( $args[ 'phrase' ] ) ) {
             $phrase = $args[ 'phrase' ];
@@ -47,17 +53,19 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
             $phrase = $args[ 'query' ];
         }
         if ( $phrase ) {
-            if ( strpos( $phrase, ':' ) !== FALSE ) {
-                $phrase = str_getcsv( $phrase, ':' );
-                $_phrase = array();
-                foreach ( $phrase as $q ) {
-                    if ( strpos( $q, 'Array.' ) === 0 ) {
-                        $q = str_replace( 'Array.', '', $q );
-                        $q = $ctx->__stash[ 'vars' ][ $q ];
+            if (! is_array( $phrase ) ) {
+                if ( strpos( $phrase, ':' ) !== FALSE ) {
+                    $phrase = str_getcsv( $phrase, ':' );
+                    $_phrase = array();
+                    foreach ( $phrase as $q ) {
+                        if ( strpos( $q, 'Array.' ) === 0 ) {
+                            $q = str_replace( 'Array.', '', $q );
+                            $q = $ctx->__stash[ 'vars' ][ $q ];
+                        }
+                        array_push( $_phrase, $q );
                     }
-                    array_push( $_phrase, $q );
+                    $phrase = $_phrase;
                 }
-                $phrase = $_phrase;
             }
         }
         if ( $ad_attr ) {
@@ -146,6 +154,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
             }
             $cmd .= " ${phrase}";
         }
+        $ctx->__stash[ 'vars' ][ 'estcmd_cmd' ] = $cmd;
         $hash = md5( $cmd );
         if ( $cache_ttl ) {
             $cache_dir = $ctx->mt->config( 'PowerCMSFilesDir' ) . '/cache/';
@@ -236,11 +245,9 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $_uri = ( string )$_uri; 
         $_id = $record->attributes()->id;
         $_id = ( string )$_id; 
-        $_snippet = $record->snippet;
-        $_snippet = ( string )$_snippet; 
         $ctx->__stash[ 'vars' ][ 'estraier_uri' ] = $_uri;
         $ctx->__stash[ 'vars' ][ 'estraier_id' ] = $_id;
-        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $_snippet;
+        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $record->snippet;
         $count = $counter + 1;
         $ctx->stash( '_estraier_counter', $count );
         $ctx->__stash[ 'vars' ][ '__total__' ] = $hit;

@@ -20,9 +20,9 @@ sub _hdlr_estraier_search {
         $offset = undef;
     }
     my $need_count = $args->{ count };
-    my $ad_attr = $args->{ ad_attr };
-    my $add_condition = $args->{ add_condition };
-    my $values = $args->{ 'values' };
+    my $ad_attr = $args->{ ad_attr } || $args->{ ad_attrs };
+    my $add_condition = $args->{ add_condition } || $args->{ add_conditions };
+    my $values = $args->{ 'values' } || $args->{ value };
     my $phrase = $args->{ 'phrase' } || $args->{ 'query' };
     my @_phrase;
     if ( $phrase && ( ( ref $phrase ) eq 'ARRAY' ) ) {
@@ -113,6 +113,9 @@ sub _hdlr_estraier_search {
     if ( $need_count ) {
         return $hit;
     }
+    if (! $hit ) {
+        return '';
+    }
     if ( $limit > 0 ) {
         $ctx->stash( 'vars' )->{ $prefix . 'pagertotal' } = _ceil( $limit / $hit );
         if ( ( $offset + $limit ) < $hit ) {
@@ -125,6 +128,9 @@ sub _hdlr_estraier_search {
             }
             $ctx->stash( 'vars' )->{ $prefix . 'prevoffset' } = $prevoffset;
         }
+    }
+    if ( ( ref $records ) ne 'ARRAY' ) {
+        $records = [ $records ];
     }
     if ( $args->{ 'shuffle' } ) {
         eval "require List::Util;";
@@ -156,6 +162,7 @@ sub _hdlr_estraier_search {
         }
         my $next = $i + 1;
         local $ctx->{ __stash }->{ vars }->{ __first__ } = 1 if ( $i == 0 );
+        local $ctx->{ __stash }->{ vars }->{ __first__ } = 0 if ( $i != 0 );
         local $ctx->{ __stash }->{ vars }->{ __counter__ } = $next;
         local $ctx->{ __stash }->{ vars }->{ __odd__ } = $odd;
         local $ctx->{ __stash }->{ vars }->{ __even__ } = $even;
