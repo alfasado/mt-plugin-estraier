@@ -20,6 +20,9 @@ sub _hdlr_estraier_search {
         $offset = undef;
     }
     my $need_count = $args->{ count };
+    if ( $need_count ) {
+        $limit = 0;
+    }
     my $ad_attr = $args->{ ad_attr } || $args->{ ad_attrs };
     my $add_condition = $args->{ add_condition } || $args->{ add_conditions };
     my $values = $args->{ 'values' } || $args->{ value };

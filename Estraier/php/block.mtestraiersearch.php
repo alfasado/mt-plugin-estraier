@@ -30,6 +30,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         if ( isset( $args[ 'count' ] ) ) {
             if ( $args[ 'count' ] ) {
                 $need_count = 1;
+                $limit = 0;
             }
         }
         if ( isset( $args[ 'ad_attr' ] ) ) {
