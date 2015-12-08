@@ -27,12 +27,6 @@ sub _hdlr_estraier_search {
     my $add_condition = $args->{ add_condition } || $args->{ add_conditions };
     my $values = $args->{ 'values' } || $args->{ value };
     my $phrase = $args->{ 'phrase' } || $args->{ 'query' };
-    my @_phrase;
-    if ( $phrase && ( ( ref $phrase ) eq 'ARRAY' ) ) {
-        @_phrase = @$phrase;
-    } else {
-        push ( @_phrase, $phrase );
-    }
     my @_ad_attr;
     if ( $ad_attr && ( ( ref $ad_attr ) eq 'ARRAY' ) ) {
         @_ad_attr = @$ad_attr;
@@ -83,11 +77,28 @@ sub _hdlr_estraier_search {
     }
     $cmd .= ' ' . MT->config( 'EstcmdIndex' );
     if ( $phrase ) {
-        my $and_or = $args->{ and_or };
-        $and_or = 'OR' unless $and_or;
-        $and_or = uc( $and_or );
-        $and_or = " ${and_or} ";
-        $phrase = _escapeshellarg( join( $and_or, @_phrase ) );
+        my $raw_query = $args->{ raw_query };
+        if (! $raw_query ) {
+            my @_phrase;
+            my $and_or = $args->{ and_or };
+            $and_or = 'OR' unless $and_or;
+            $and_or = uc( $and_or );
+            $and_or = " ${and_or} ";
+            if ( ( ref $phrase ) eq 'ARRAY' ) {
+                @_phrase = @$phrase;
+            } else {
+                my $separator = $args->{ separator } || ' ';
+                my $search = quotemeta( $separator );
+                if ( $phrase =~ m!$search! ) {
+                    @_phrase = split( $separator, $phrase );
+                } else {
+                    push ( @_phrase, $phrase );
+                }
+            }
+            $phrase = _escapeshellarg( join( $and_or, @_phrase ) );
+        } else {
+            $phrase = _escapeshellarg( $phrase );
+        }
         $cmd .= " ${phrase}";
     }
     my $hash;

@@ -144,14 +144,23 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         }
         $cmd .= ' ' . $ctx->mt->config( 'EstcmdIndex' );
         if ( $phrase ) {
+            if ( isset( $args[ 'and_or' ] ) ) $and_or = $args[ 'and_or' ];
+            if (! $and_or ) $and_or = 'OR';
+            $and_or = strtoupper( $and_or );
+            $and_or = " ${and_or} ";
             if ( is_array( $phrase ) ) {
-                if ( isset( $args[ 'and_or' ] ) ) $and_or = $args[ 'and_or' ];
-                if (! $and_or ) $and_or = 'OR';
-                $and_or = strtoupper( $and_or );
-                $and_or = " ${and_or} ";
                 $phrase = escapeshellarg( implode( $and_or, $phrase ) );
             } else {
                 $phrase = escapeshellarg( $phrase );
+                if ( isset( $args[ 'raw_query' ] ) ) $raw_query = $args[ 'raw_query' ];
+                if (! $raw_query ) {
+                    if ( isset( $args[ 'separator' ] ) ) $separator = $args[ 'separator' ];
+                    if (! $separator ) $separator = ' ';
+                    if ( strpos( $phrase, $separator ) !== FALSE ) {
+                        $phrase = explode( $separator, $phrase );
+                        $phrase = join( $and_or, $phrase );
+                    }
+                }
             }
             $cmd .= " ${phrase}";
         }
@@ -248,7 +257,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $_id = ( string )$_id; 
         $ctx->__stash[ 'vars' ][ 'estraier_uri' ] = $_uri;
         $ctx->__stash[ 'vars' ][ 'estraier_id' ] = $_id;
-        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = $record->snippet;
+        $ctx->__stash[ 'vars' ][ $prefix . 'snippet' ] = (string)$record->snippet;
         $count = $counter + 1;
         $ctx->stash( '_estraier_counter', $count );
         $ctx->__stash[ 'vars' ][ '__total__' ] = $hit;
