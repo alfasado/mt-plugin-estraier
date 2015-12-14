@@ -27,6 +27,13 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
                 $offset = NULL;
             }
         }
+        if ( $offset ) {
+            if ( isset( $args[ 'decrementoffset' ] ) ) {
+                if ( $args[ 'decrementoffset' ] ) {
+                    $offset--;
+                }
+            }
+        }
         if ( isset( $args[ 'count' ] ) ) {
             if ( $args[ 'count' ] ) {
                 $need_count = 1;

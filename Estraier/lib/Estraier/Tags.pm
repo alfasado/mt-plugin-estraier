@@ -19,6 +19,9 @@ sub _hdlr_estraier_search {
     if ( $offset !~ /^[0-9]+$/ ) {
         $offset = undef;
     }
+    if ( $offset && $args->{ decrementoffset } ) {
+        $offset--;
+    }
     my $need_count = $args->{ count };
     if ( $need_count ) {
         $limit = 0;
