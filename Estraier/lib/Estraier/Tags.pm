@@ -11,12 +11,12 @@ sub _hdlr_estraier_search {
     my $prefix = $args->{ prefix };
     my $cache_ttl = $args->{ cache_ttl };
     my $limit = $args->{ limit };
-    if ( $limit !~ /^[0-9]+$/ ) {
+    if ( $limit && ( $limit !~ /^[0-9]+$/ ) ) {
         $limit = undef;
     }
     $limit = '-1' unless $limit;
     my $offset = $args->{ offset };
-    if ( $offset !~ /^[0-9]+$/ ) {
+    if ( $offset && ( $offset !~ /^[0-9]+$/ ) ) {
         $offset = undef;
     }
     if ( $offset && $args->{ decrementoffset } ) {
