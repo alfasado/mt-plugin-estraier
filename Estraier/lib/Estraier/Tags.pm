@@ -166,7 +166,7 @@ sub _hdlr_estraier_search {
     my $tokens = $ctx->stash( 'tokens' );
     my $builder = $ctx->stash( 'builder' );
     my $res = '';
-    my $i = 0;
+    $i = 0;
     my $odd = 1; my $even = 0;
     for my $doc ( @$records ) {
         local $ctx->{ __stash }->{ vars }->{ estraier_uri } = $doc->{ uri };
