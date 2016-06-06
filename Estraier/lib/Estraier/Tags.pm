@@ -218,7 +218,7 @@ sub _get_cache {
     require MT::FileMgr;
     my $fmgr = MT::FileMgr->new( 'Local' )
                     or die MT::FileMgr->errstr;
-    my $cache_dir = File::Spec->catdir( MT->config( 'PowerCMSFilesDir' ) , 'cache' );
+    my $cache_dir = File::Spec->catdir( MT->config( 'PowerCMSFilesDir' ), 'cache', 'Estraier' );
     my $cache_file = File::Spec->catfile( $cache_dir, $hash );
     if ( $fmgr->exists( $cache_file ) ) {
         my $mtime = $fmgr->file_mod_time( $cache_file );

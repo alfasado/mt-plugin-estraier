@@ -174,7 +174,8 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $ctx->__stash[ 'vars' ][ 'estcmd_cmd' ] = $cmd;
         $hash = md5( $cmd );
         if ( $cache_ttl ) {
-            $cache_dir = $ctx->mt->config( 'PowerCMSFilesDir' ) . '/cache/';
+            $delimiter = DIRECTORY_SEPARATOR;
+            $cache_dir = $ctx->mt->config( 'PowerCMSFilesDir' ) . "${delimiter}cache${delimiter}Estraier${delimiter}";
             $cache = $cache_dir . $hash;
             if ( file_exists( $cache ) ) {
                 $mtime = filemtime( $cache );
