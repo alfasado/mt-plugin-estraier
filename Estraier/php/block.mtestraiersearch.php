@@ -15,7 +15,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         }
         if ( isset( $args[ 'limit' ] ) ) {
             $limit = $args[ 'limit' ];
-            if (! ctype_digit( $limit ) ) {
+            if (! ctype_digit((string) $limit ) ) {
                 $limit = '-1';
             }
         } else {
@@ -23,7 +23,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         }
         if ( isset( $args[ 'offset' ] ) ) {
             $offset = $args[ 'offset' ];
-            if (! ctype_digit( $offset ) ) {
+            if (! ctype_digit((string) $offset ) ) {
                 $offset = NULL;
             }
         }
@@ -216,7 +216,7 @@ function smarty_block_mtestraiersearch ( $args, $content, $ctx, &$repeat ) {
         $ctx->stash( '_estraier_count', $max );
         $ctx->__stash[ 'vars' ][ $prefix . 'totalresult' ] = $max;
         if ( $limit > 0 ) {
-            $ctx->__stash[ 'vars' ][ $prefix . 'pagertotal' ] = ceil( $limit / $hit );
+            $ctx->__stash[ 'vars' ][ $prefix . 'pagertotal' ] = ceil( $hit / $limit );
             if ( ( $offset + $limit ) < $hit ) {
                 $ctx->__stash[ 'vars' ][ $prefix . 'nextoffset' ] = $offset + $limit;
             }
